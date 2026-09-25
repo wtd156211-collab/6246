@@ -1,0 +1,118 @@
+{
+  "version": 1,
+  "seed": 20240303,
+  "tables": [
+    {
+      "name": "devices",
+      "rows": 25000,
+      "columns": [
+        {
+          "name": "device_id",
+          "type": "int",
+          "unique": true,
+          "not_null": true,
+          "distribution": {"kind": "serial", "start": 1, "step": 1}
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "not_null": true,
+          "distribution": {
+            "kind": "categorical",
+            "values": ["m1", "m2", "m3", "m4"],
+            "weights": [0.40, 0.30, 0.20, 0.10]
+          }
+        },
+        {
+          "name": "uptime_h",
+          "type": "int",
+          "min": 0,
+          "max": 719,
+          "not_null": true,
+          "distribution": {"kind": "uniform"},
+          "hist_bins": 6
+        }
+      ]
+    },
+    {
+      "name": "readings",
+      "rows": 60000,
+      "columns": [
+        {
+          "name": "reading_id",
+          "type": "int",
+          "unique": true,
+          "not_null": true,
+          "distribution": {"kind": "serial", "start": 1, "step": 1}
+        },
+        {
+          "name": "device_id",
+          "type": "int",
+          "not_null": true,
+          "distribution": {"kind": "ref_zipf", "exponent": 1.0},
+          "hist_bins": 5
+        },
+        {
+          "name": "trace_id",
+          "type": "string",
+          "min_len": 12,
+          "max_len": 12,
+          "charset": "0123456789abcdef",
+          "not_null": true,
+          "distribution": {"kind": "uniform"},
+          "hist_bins": 1,
+          "tolerance": 0.001
+        },
+        {
+          "name": "window_start",
+          "type": "int",
+          "min": 0,
+          "max": 1439,
+          "not_null": true,
+          "distribution": {"kind": "uniform"},
+          "hist_bins": 4
+        },
+        {
+          "name": "window_end",
+          "type": "int",
+          "not_null": true,
+          "distribution": {"kind": "offset", "column": "window_start", "min": 0, "max": 59},
+          "hist_bins": 5
+        },
+        {
+          "name": "battery_pct",
+          "type": "int",
+          "min": 0,
+          "max": 100,
+          "not_null": true,
+          "distribution": {"kind": "zipf", "exponent": 0.6},
+          "hist_bins": 5
+        },
+        {
+          "name": "reading",
+          "type": "float",
+          "min": -50.0,
+          "max": 50.0,
+          "precision": 3,
+          "not_null": true,
+          "distribution": {"kind": "uniform"},
+          "hist_bins": 4
+        }
+      ],
+      "unique_keys": [
+        ["device_id", "trace_id"]
+      ],
+      "checks": [
+        {"kind": "lte", "left": "window_start", "right": "window_end"}
+      ],
+      "foreign_keys": [
+        {
+          "columns": ["device_id"],
+          "ref_table": "devices",
+          "ref_columns": ["device_id"],
+          "null_ok": false
+        }
+      ]
+    }
+  ]
+}

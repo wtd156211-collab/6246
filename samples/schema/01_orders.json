@@ -1,0 +1,120 @@
+{
+  "version": 1,
+  "seed": 20240101,
+  "tables": [
+    {
+      "name": "customers",
+      "rows": 30000,
+      "columns": [
+        {
+          "name": "customer_id",
+          "type": "int",
+          "unique": true,
+          "not_null": true,
+          "distribution": {"kind": "serial", "start": 1, "step": 1}
+        },
+        {
+          "name": "region",
+          "type": "string",
+          "not_null": true,
+          "distribution": {
+            "kind": "categorical",
+            "values": ["north", "south", "east", "west", "central"],
+            "weights": [0.30, 0.25, 0.20, 0.15, 0.10]
+          }
+        },
+        {
+          "name": "age",
+          "type": "int",
+          "min": 18,
+          "max": 65,
+          "not_null": true,
+          "distribution": {"kind": "uniform"},
+          "hist_bins": 4
+        },
+        {
+          "name": "vip",
+          "type": "bool",
+          "not_null": true,
+          "distribution": {"kind": "categorical", "values": [true, false], "weights": [0.20, 0.80]}
+        },
+        {
+          "name": "nickname",
+          "type": "string",
+          "min_len": 5,
+          "max_len": 9,
+          "charset": "abcdefghijklmnopqrstuvwxyz",
+          "null_rate": 0.05
+        }
+      ]
+    },
+    {
+      "name": "orders",
+      "rows": 60000,
+      "columns": [
+        {
+          "name": "order_id",
+          "type": "int",
+          "unique": true,
+          "not_null": true,
+          "distribution": {"kind": "serial", "start": 1000, "step": 1}
+        },
+        {
+          "name": "customer_id",
+          "type": "int",
+          "not_null": true,
+          "distribution": {"kind": "ref_zipf", "exponent": 1.0},
+          "hist_bins": 4
+        },
+        {
+          "name": "amount",
+          "type": "float",
+          "min": 9.9,
+          "max": 9999.9,
+          "precision": 2,
+          "not_null": true,
+          "distribution": {"kind": "uniform"},
+          "hist_bins": 4
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "not_null": true,
+          "distribution": {
+            "kind": "categorical",
+            "values": ["created", "paid", "shipped", "closed"],
+            "weights": [0.40, 0.30, 0.20, 0.10]
+          },
+          "tolerance": 0.015
+        },
+        {
+          "name": "created_min",
+          "type": "int",
+          "min": 0,
+          "max": 1439,
+          "not_null": true,
+          "distribution": {"kind": "uniform"},
+          "hist_bins": 4
+        },
+        {
+          "name": "paid_min",
+          "type": "int",
+          "not_null": true,
+          "distribution": {"kind": "offset", "column": "created_min", "min": 1, "max": 120},
+          "hist_bins": 4
+        }
+      ],
+      "checks": [
+        {"kind": "lt", "left": "created_min", "right": "paid_min"}
+      ],
+      "foreign_keys": [
+        {
+          "columns": ["customer_id"],
+          "ref_table": "customers",
+          "ref_columns": ["customer_id"],
+          "null_ok": false
+        }
+      ]
+    }
+  ]
+}

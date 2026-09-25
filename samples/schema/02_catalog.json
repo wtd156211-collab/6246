@@ -1,0 +1,138 @@
+{
+  "version": 1,
+  "seed": 20240202,
+  "tables": [
+    {
+      "name": "tenants",
+      "rows": 25000,
+      "columns": [
+        {
+          "name": "tenant_id",
+          "type": "int",
+          "unique": true,
+          "not_null": true,
+          "distribution": {"kind": "serial", "start": 1, "step": 1}
+        },
+        {
+          "name": "plan",
+          "type": "string",
+          "not_null": true,
+          "distribution": {
+            "kind": "categorical",
+            "values": ["free", "pro", "ent"],
+            "weights": [0.60, 0.30, 0.10]
+          }
+        },
+        {
+          "name": "seats",
+          "type": "int",
+          "min": 1,
+          "max": 50,
+          "not_null": true,
+          "distribution": {"kind": "uniform"},
+          "hist_bins": 5
+        }
+      ]
+    },
+    {
+      "name": "categories",
+      "rows": 25000,
+      "columns": [
+        {
+          "name": "tenant_id",
+          "type": "int",
+          "not_null": true,
+          "distribution": {"kind": "ref_uniform"},
+          "hist_bins": 4
+        },
+        {
+          "name": "category_id",
+          "type": "int",
+          "unique": true,
+          "not_null": true,
+          "distribution": {"kind": "serial", "start": 1, "step": 1}
+        },
+        {
+          "name": "parent_id",
+          "type": "int",
+          "null_rate": 0.08,
+          "distribution": {"kind": "ref_uniform"}
+        },
+        {
+          "name": "code",
+          "type": "string",
+          "min_len": 6,
+          "max_len": 10,
+          "charset": "abcdefghijklmnopqrstuvwxyz0123456789",
+          "not_null": true,
+          "distribution": {"kind": "uniform"},
+          "hist_bins": 5
+        }
+      ],
+      "unique_keys": [
+        ["tenant_id", "code"]
+      ],
+      "checks": [
+        {"kind": "lt", "left": "parent_id", "right": "category_id"}
+      ],
+      "foreign_keys": [
+        {
+          "columns": ["tenant_id"],
+          "ref_table": "tenants",
+          "ref_columns": ["tenant_id"],
+          "null_ok": false
+        },
+        {
+          "columns": ["parent_id"],
+          "ref_table": "categories",
+          "ref_columns": ["category_id"],
+          "null_ok": true
+        }
+      ]
+    },
+    {
+      "name": "items",
+      "rows": 30000,
+      "columns": [
+        {
+          "name": "item_id",
+          "type": "int",
+          "unique": true,
+          "not_null": true,
+          "distribution": {"kind": "serial", "start": 1, "step": 1}
+        },
+        {
+          "name": "category_id",
+          "type": "int",
+          "not_null": true,
+          "distribution": {"kind": "ref_zipf", "exponent": 1.2},
+          "hist_bins": 4
+        },
+        {
+          "name": "price",
+          "type": "float",
+          "min": 1.0,
+          "max": 500.0,
+          "precision": 2,
+          "not_null": true,
+          "distribution": {"kind": "uniform"},
+          "hist_bins": 4
+        },
+        {
+          "name": "in_stock",
+          "type": "bool",
+          "not_null": true,
+          "distribution": {"kind": "categorical", "values": [true, false], "weights": [0.70, 0.30]}
+        }
+      ],
+      "foreign_keys": [
+        {
+          "columns": ["category_id"],
+          "ref_table": "categories",
+          "ref_columns": ["category_id"],
+          "null_ok": false
+        }
+      ]
+    }
+  ]
+}
