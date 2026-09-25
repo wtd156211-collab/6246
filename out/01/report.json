@@ -1,0 +1,810 @@
+{
+  "schema": "samples/schema/01_orders.json",
+  "seed": 20240101,
+  "rows_scale": 1.0,
+  "tables": [
+    {
+      "name": "customers",
+      "rows": 30000,
+      "columns": [
+        {
+          "name": "customer_id",
+          "type": "int",
+          "null_count": 0,
+          "unique_count": 30000,
+          "buckets": [
+            {
+              "key": "[1,3001)",
+              "count": 3000,
+              "ratio": 0.1
+            },
+            {
+              "key": "[3001,6001)",
+              "count": 3000,
+              "ratio": 0.1
+            },
+            {
+              "key": "[6001,9001)",
+              "count": 3000,
+              "ratio": 0.1
+            },
+            {
+              "key": "[9001,12001)",
+              "count": 3000,
+              "ratio": 0.1
+            },
+            {
+              "key": "[12001,15001)",
+              "count": 3000,
+              "ratio": 0.1
+            },
+            {
+              "key": "[15001,18001)",
+              "count": 3000,
+              "ratio": 0.1
+            },
+            {
+              "key": "[18001,21001)",
+              "count": 3000,
+              "ratio": 0.1
+            },
+            {
+              "key": "[21001,24001)",
+              "count": 3000,
+              "ratio": 0.1
+            },
+            {
+              "key": "[24001,27001)",
+              "count": 3000,
+              "ratio": 0.1
+            },
+            {
+              "key": "[27001,30000]",
+              "count": 3000,
+              "ratio": 0.1
+            }
+          ]
+        },
+        {
+          "name": "region",
+          "type": "string",
+          "null_count": 0,
+          "unique_count": 5,
+          "buckets": [
+            {
+              "key": "=\"north\"",
+              "count": 8903,
+              "ratio": 0.296767
+            },
+            {
+              "key": "=\"south\"",
+              "count": 7433,
+              "ratio": 0.247767
+            },
+            {
+              "key": "=\"east\"",
+              "count": 6087,
+              "ratio": 0.2029
+            },
+            {
+              "key": "=\"west\"",
+              "count": 4592,
+              "ratio": 0.153067
+            },
+            {
+              "key": "=\"central\"",
+              "count": 2985,
+              "ratio": 0.0995
+            }
+          ]
+        },
+        {
+          "name": "age",
+          "type": "int",
+          "null_count": 0,
+          "unique_count": 48,
+          "buckets": [
+            {
+              "key": "[18,30)",
+              "count": 7471,
+              "ratio": 0.249033
+            },
+            {
+              "key": "[30,42)",
+              "count": 7529,
+              "ratio": 0.250967
+            },
+            {
+              "key": "[42,54)",
+              "count": 7444,
+              "ratio": 0.248133
+            },
+            {
+              "key": "[54,65]",
+              "count": 7556,
+              "ratio": 0.251867
+            }
+          ]
+        },
+        {
+          "name": "vip",
+          "type": "bool",
+          "null_count": 0,
+          "unique_count": 2,
+          "buckets": [
+            {
+              "key": "=true",
+              "count": 6013,
+              "ratio": 0.200433
+            },
+            {
+              "key": "=false",
+              "count": 23987,
+              "ratio": 0.799567
+            }
+          ]
+        },
+        {
+          "name": "nickname",
+          "type": "string",
+          "null_count": 1500,
+          "unique_count": 28496,
+          "buckets": [
+            {
+              "key": "L[5,6)",
+              "count": 5812,
+              "ratio": 0.193733
+            },
+            {
+              "key": "L[6,7)",
+              "count": 5655,
+              "ratio": 0.1885
+            },
+            {
+              "key": "L[7,8)",
+              "count": 5770,
+              "ratio": 0.192333
+            },
+            {
+              "key": "L[8,9)",
+              "count": 5648,
+              "ratio": 0.188267
+            },
+            {
+              "key": "L[9,9]",
+              "count": 5615,
+              "ratio": 0.187167
+            }
+          ]
+        }
+      ],
+      "checks": [
+        {
+          "id": "rows:customers",
+          "kind": "rows",
+          "status": "pass",
+          "expected": 30000,
+          "measured": 30000,
+          "tolerance": null,
+          "detail": ""
+        },
+        {
+          "id": "columns:customers",
+          "kind": "columns",
+          "status": "pass",
+          "expected": "customer_id:int,region:string,age:int,vip:bool,nickname:string",
+          "measured": "customer_id:int,region:string,age:int,vip:bool,nickname:string",
+          "tolerance": null,
+          "detail": ""
+        },
+        {
+          "id": "nullratio:customers.customer_id",
+          "kind": "nullratio",
+          "status": "pass",
+          "expected": 0.0,
+          "measured": 0.0,
+          "tolerance": 0.02,
+          "detail": ""
+        },
+        {
+          "id": "nullratio:customers.region",
+          "kind": "nullratio",
+          "status": "pass",
+          "expected": 0.0,
+          "measured": 0.0,
+          "tolerance": 0.02,
+          "detail": ""
+        },
+        {
+          "id": "nullratio:customers.age",
+          "kind": "nullratio",
+          "status": "pass",
+          "expected": 0.0,
+          "measured": 0.0,
+          "tolerance": 0.02,
+          "detail": ""
+        },
+        {
+          "id": "nullratio:customers.vip",
+          "kind": "nullratio",
+          "status": "pass",
+          "expected": 0.0,
+          "measured": 0.0,
+          "tolerance": 0.02,
+          "detail": ""
+        },
+        {
+          "id": "nullratio:customers.nickname",
+          "kind": "nullratio",
+          "status": "pass",
+          "expected": 0.05,
+          "measured": 0.05,
+          "tolerance": 0.02,
+          "detail": ""
+        },
+        {
+          "id": "unique:customers.customer_id",
+          "kind": "unique",
+          "status": "pass",
+          "expected": 30000,
+          "measured": 30000,
+          "tolerance": null,
+          "detail": ""
+        },
+        {
+          "id": "bucket:customers.region#=\"north\"",
+          "kind": "bucket",
+          "status": "pass",
+          "expected": 0.3,
+          "measured": 0.296767,
+          "tolerance": 0.02,
+          "detail": ""
+        },
+        {
+          "id": "bucket:customers.region#=\"south\"",
+          "kind": "bucket",
+          "status": "pass",
+          "expected": 0.25,
+          "measured": 0.247767,
+          "tolerance": 0.02,
+          "detail": ""
+        },
+        {
+          "id": "bucket:customers.region#=\"east\"",
+          "kind": "bucket",
+          "status": "pass",
+          "expected": 0.2,
+          "measured": 0.2029,
+          "tolerance": 0.02,
+          "detail": ""
+        },
+        {
+          "id": "bucket:customers.region#=\"west\"",
+          "kind": "bucket",
+          "status": "pass",
+          "expected": 0.15,
+          "measured": 0.153067,
+          "tolerance": 0.02,
+          "detail": ""
+        },
+        {
+          "id": "bucket:customers.region#=\"central\"",
+          "kind": "bucket",
+          "status": "pass",
+          "expected": 0.1,
+          "measured": 0.0995,
+          "tolerance": 0.02,
+          "detail": ""
+        },
+        {
+          "id": "bucket:customers.age#[18,30)",
+          "kind": "bucket",
+          "status": "pass",
+          "expected": 0.25,
+          "measured": 0.249033,
+          "tolerance": 0.02,
+          "detail": ""
+        },
+        {
+          "id": "bucket:customers.age#[30,42)",
+          "kind": "bucket",
+          "status": "pass",
+          "expected": 0.25,
+          "measured": 0.250967,
+          "tolerance": 0.02,
+          "detail": ""
+        },
+        {
+          "id": "bucket:customers.age#[42,54)",
+          "kind": "bucket",
+          "status": "pass",
+          "expected": 0.25,
+          "measured": 0.248133,
+          "tolerance": 0.02,
+          "detail": ""
+        },
+        {
+          "id": "bucket:customers.age#[54,65]",
+          "kind": "bucket",
+          "status": "pass",
+          "expected": 0.25,
+          "measured": 0.251867,
+          "tolerance": 0.02,
+          "detail": ""
+        },
+        {
+          "id": "bucket:customers.vip#=true",
+          "kind": "bucket",
+          "status": "pass",
+          "expected": 0.2,
+          "measured": 0.200433,
+          "tolerance": 0.02,
+          "detail": ""
+        },
+        {
+          "id": "bucket:customers.vip#=false",
+          "kind": "bucket",
+          "status": "pass",
+          "expected": 0.8,
+          "measured": 0.799567,
+          "tolerance": 0.02,
+          "detail": ""
+        }
+      ]
+    },
+    {
+      "name": "orders",
+      "rows": 60000,
+      "columns": [
+        {
+          "name": "order_id",
+          "type": "int",
+          "null_count": 0,
+          "unique_count": 60000,
+          "buckets": [
+            {
+              "key": "[1000,7000)",
+              "count": 6000,
+              "ratio": 0.1
+            },
+            {
+              "key": "[7000,13000)",
+              "count": 6000,
+              "ratio": 0.1
+            },
+            {
+              "key": "[13000,19000)",
+              "count": 6000,
+              "ratio": 0.1
+            },
+            {
+              "key": "[19000,25000)",
+              "count": 6000,
+              "ratio": 0.1
+            },
+            {
+              "key": "[25000,31000)",
+              "count": 6000,
+              "ratio": 0.1
+            },
+            {
+              "key": "[31000,37000)",
+              "count": 6000,
+              "ratio": 0.1
+            },
+            {
+              "key": "[37000,43000)",
+              "count": 6000,
+              "ratio": 0.1
+            },
+            {
+              "key": "[43000,49000)",
+              "count": 6000,
+              "ratio": 0.1
+            },
+            {
+              "key": "[49000,55000)",
+              "count": 6000,
+              "ratio": 0.1
+            },
+            {
+              "key": "[55000,60999]",
+              "count": 6000,
+              "ratio": 0.1
+            }
+          ]
+        },
+        {
+          "name": "customer_id",
+          "type": "int",
+          "null_count": 0,
+          "unique_count": 12224,
+          "buckets": [
+            {
+              "key": "[1,7501)",
+              "count": 52341,
+              "ratio": 0.87235
+            },
+            {
+              "key": "[7501,15001)",
+              "count": 3858,
+              "ratio": 0.0643
+            },
+            {
+              "key": "[15001,22501)",
+              "count": 2261,
+              "ratio": 0.037683
+            },
+            {
+              "key": "[22501,30000]",
+              "count": 1540,
+              "ratio": 0.025667
+            }
+          ]
+        },
+        {
+          "name": "amount",
+          "type": "float",
+          "null_count": 0,
+          "unique_count": 58251,
+          "buckets": [
+            {
+              "key": "[9.9,2507.4)",
+              "count": 14844,
+              "ratio": 0.2474
+            },
+            {
+              "key": "[2507.4,5004.9)",
+              "count": 15145,
+              "ratio": 0.252417
+            },
+            {
+              "key": "[5004.9,7502.4)",
+              "count": 14986,
+              "ratio": 0.249767
+            },
+            {
+              "key": "[7502.4,9999.9]",
+              "count": 15025,
+              "ratio": 0.250417
+            }
+          ]
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "null_count": 0,
+          "unique_count": 4,
+          "buckets": [
+            {
+              "key": "=\"created\"",
+              "count": 24112,
+              "ratio": 0.401867
+            },
+            {
+              "key": "=\"paid\"",
+              "count": 18019,
+              "ratio": 0.300317
+            },
+            {
+              "key": "=\"shipped\"",
+              "count": 11792,
+              "ratio": 0.196533
+            },
+            {
+              "key": "=\"closed\"",
+              "count": 6077,
+              "ratio": 0.101283
+            }
+          ]
+        },
+        {
+          "name": "created_min",
+          "type": "int",
+          "null_count": 0,
+          "unique_count": 1440,
+          "buckets": [
+            {
+              "key": "[0,360)",
+              "count": 15133,
+              "ratio": 0.252217
+            },
+            {
+              "key": "[360,720)",
+              "count": 14819,
+              "ratio": 0.246983
+            },
+            {
+              "key": "[720,1080)",
+              "count": 15074,
+              "ratio": 0.251233
+            },
+            {
+              "key": "[1080,1439]",
+              "count": 14974,
+              "ratio": 0.249567
+            }
+          ]
+        },
+        {
+          "name": "paid_min",
+          "type": "int",
+          "null_count": 0,
+          "unique_count": 1554,
+          "buckets": [
+            {
+              "key": "[1,390)",
+              "count": 13845,
+              "ratio": 0.23075
+            },
+            {
+              "key": "[390,780)",
+              "count": 16129,
+              "ratio": 0.268817
+            },
+            {
+              "key": "[780,1170)",
+              "count": 16346,
+              "ratio": 0.272433
+            },
+            {
+              "key": "[1170,1559]",
+              "count": 13680,
+              "ratio": 0.228
+            }
+          ]
+        }
+      ],
+      "checks": [
+        {
+          "id": "rows:orders",
+          "kind": "rows",
+          "status": "pass",
+          "expected": 60000,
+          "measured": 60000,
+          "tolerance": null,
+          "detail": ""
+        },
+        {
+          "id": "columns:orders",
+          "kind": "columns",
+          "status": "pass",
+          "expected": "order_id:int,customer_id:int,amount:float,status:string,created_min:int,paid_min:int",
+          "measured": "order_id:int,customer_id:int,amount:float,status:string,created_min:int,paid_min:int",
+          "tolerance": null,
+          "detail": ""
+        },
+        {
+          "id": "nullratio:orders.order_id",
+          "kind": "nullratio",
+          "status": "pass",
+          "expected": 0.0,
+          "measured": 0.0,
+          "tolerance": 0.02,
+          "detail": ""
+        },
+        {
+          "id": "nullratio:orders.customer_id",
+          "kind": "nullratio",
+          "status": "pass",
+          "expected": 0.0,
+          "measured": 0.0,
+          "tolerance": 0.02,
+          "detail": ""
+        },
+        {
+          "id": "nullratio:orders.amount",
+          "kind": "nullratio",
+          "status": "pass",
+          "expected": 0.0,
+          "measured": 0.0,
+          "tolerance": 0.02,
+          "detail": ""
+        },
+        {
+          "id": "nullratio:orders.status",
+          "kind": "nullratio",
+          "status": "pass",
+          "expected": 0.0,
+          "measured": 0.0,
+          "tolerance": 0.015,
+          "detail": ""
+        },
+        {
+          "id": "nullratio:orders.created_min",
+          "kind": "nullratio",
+          "status": "pass",
+          "expected": 0.0,
+          "measured": 0.0,
+          "tolerance": 0.02,
+          "detail": ""
+        },
+        {
+          "id": "nullratio:orders.paid_min",
+          "kind": "nullratio",
+          "status": "pass",
+          "expected": 0.0,
+          "measured": 0.0,
+          "tolerance": 0.02,
+          "detail": ""
+        },
+        {
+          "id": "unique:orders.order_id",
+          "kind": "unique",
+          "status": "pass",
+          "expected": 60000,
+          "measured": 60000,
+          "tolerance": null,
+          "detail": ""
+        },
+        {
+          "id": "fk:orders.customer_id->customers.customer_id",
+          "kind": "fk",
+          "status": "pass",
+          "expected": "pass",
+          "measured": "pass",
+          "tolerance": null,
+          "detail": ""
+        },
+        {
+          "id": "ineq:orders.created_min<paid_min",
+          "kind": "ineq",
+          "status": "pass",
+          "expected": "pass",
+          "measured": "pass",
+          "tolerance": null,
+          "detail": ""
+        },
+        {
+          "id": "bucket:orders.customer_id#[1,7501)",
+          "kind": "bucket",
+          "status": "pass",
+          "expected": 0.87266,
+          "measured": 0.87235,
+          "tolerance": 0.02,
+          "detail": ""
+        },
+        {
+          "id": "bucket:orders.customer_id#[7501,15001)",
+          "kind": "bucket",
+          "status": "pass",
+          "expected": 0.06367,
+          "measured": 0.0643,
+          "tolerance": 0.02,
+          "detail": ""
+        },
+        {
+          "id": "bucket:orders.customer_id#[15001,22501)",
+          "kind": "bucket",
+          "status": "pass",
+          "expected": 0.03724,
+          "measured": 0.037683,
+          "tolerance": 0.02,
+          "detail": ""
+        },
+        {
+          "id": "bucket:orders.customer_id#[22501,30000]",
+          "kind": "bucket",
+          "status": "pass",
+          "expected": 0.02643,
+          "measured": 0.025667,
+          "tolerance": 0.02,
+          "detail": ""
+        },
+        {
+          "id": "bucket:orders.status#=\"created\"",
+          "kind": "bucket",
+          "status": "pass",
+          "expected": 0.4,
+          "measured": 0.401867,
+          "tolerance": 0.015,
+          "detail": ""
+        },
+        {
+          "id": "bucket:orders.status#=\"paid\"",
+          "kind": "bucket",
+          "status": "pass",
+          "expected": 0.3,
+          "measured": 0.300317,
+          "tolerance": 0.015,
+          "detail": ""
+        },
+        {
+          "id": "bucket:orders.status#=\"shipped\"",
+          "kind": "bucket",
+          "status": "pass",
+          "expected": 0.2,
+          "measured": 0.196533,
+          "tolerance": 0.015,
+          "detail": ""
+        },
+        {
+          "id": "bucket:orders.status#=\"closed\"",
+          "kind": "bucket",
+          "status": "pass",
+          "expected": 0.1,
+          "measured": 0.101283,
+          "tolerance": 0.015,
+          "detail": ""
+        },
+        {
+          "id": "bucket:orders.created_min#[0,360)",
+          "kind": "bucket",
+          "status": "pass",
+          "expected": 0.25,
+          "measured": 0.252217,
+          "tolerance": 0.02,
+          "detail": ""
+        },
+        {
+          "id": "bucket:orders.created_min#[360,720)",
+          "kind": "bucket",
+          "status": "pass",
+          "expected": 0.25,
+          "measured": 0.246983,
+          "tolerance": 0.02,
+          "detail": ""
+        },
+        {
+          "id": "bucket:orders.created_min#[720,1080)",
+          "kind": "bucket",
+          "status": "pass",
+          "expected": 0.25,
+          "measured": 0.251233,
+          "tolerance": 0.02,
+          "detail": ""
+        },
+        {
+          "id": "bucket:orders.created_min#[1080,1439]",
+          "kind": "bucket",
+          "status": "pass",
+          "expected": 0.25,
+          "measured": 0.249567,
+          "tolerance": 0.02,
+          "detail": ""
+        },
+        {
+          "id": "bucket:orders.paid_min#[1,390)",
+          "kind": "bucket",
+          "status": "pass",
+          "expected": 0.22882,
+          "measured": 0.23075,
+          "tolerance": 0.02,
+          "detail": ""
+        },
+        {
+          "id": "bucket:orders.paid_min#[390,780)",
+          "kind": "bucket",
+          "status": "pass",
+          "expected": 0.27083,
+          "measured": 0.268817,
+          "tolerance": 0.02,
+          "detail": ""
+        },
+        {
+          "id": "bucket:orders.paid_min#[780,1170)",
+          "kind": "bucket",
+          "status": "pass",
+          "expected": 0.27083,
+          "measured": 0.272433,
+          "tolerance": 0.02,
+          "detail": ""
+        },
+        {
+          "id": "bucket:orders.paid_min#[1170,1559]",
+          "kind": "bucket",
+          "status": "pass",
+          "expected": 0.22951,
+          "measured": 0.228,
+          "tolerance": 0.02,
+          "detail": ""
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "total": 46,
+    "pass": 46,
+    "fail": 0
+  }
+}

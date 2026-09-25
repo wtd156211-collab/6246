@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>datasow 校验报告</title>
+<style>
+  :root { --pass: #1a7f37; --fail: #cf222e; --ink: #1f2328; --muted: #656d76; }
+  * { box-sizing: border-box; }
+  body { font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+         color: var(--ink); margin: 0; background: #f6f8fa; }
+  header { background: #24292f; color: #fff; padding: 16px 24px; }
+  header h1 { font-size: 18px; margin: 0 0 6px; }
+  header .meta { font-size: 13px; color: #9da7b3; }
+  header .meta code { color: #d0d7de; }
+  #summary { display: flex; gap: 16px; padding: 16px 24px; flex-wrap: wrap; }
+  .card { background: #fff; border: 1px solid #d0d7de; border-radius: 8px;
+          padding: 12px 16px; }
+  .card .num { font-size: 24px; font-weight: 600; }
+  .card .label { font-size: 12px; color: var(--muted); }
+  .num.pass { color: var(--pass); } .num.fail { color: var(--fail); }
+  main { padding: 0 24px 48px; }
+  h2 { font-size: 16px; margin: 28px 0 4px; }
+  h3 { font-size: 14px; margin: 20px 0 8px; }
+  .table-meta { color: var(--muted); font-size: 13px; margin-bottom: 8px; }
+  .grid { display: flex; flex-wrap: wrap; gap: 16px; }
+  .col-card { background: #fff; border: 1px solid #d0d7de; border-radius: 8px;
+              padding: 12px; width: 520px; }
+  .col-card h4 { margin: 0 0 4px; font-size: 13px; }
+  .col-card h4 .type { color: var(--muted); font-weight: 400; }
+  .col-stats { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+  canvas { display: block; width: 100%; }
+  table.checks { border-collapse: collapse; width: 100%; background: #fff;
+                 font-size: 12.5px; margin-top: 8px; }
+  table.checks th, table.checks td { border: 1px solid #d0d7de;
+                 padding: 4px 8px; text-align: left; }
+  table.checks th { background: #f6f8fa; }
+  td.status-pass { color: var(--pass); font-weight: 600; }
+  tr.fail td { background: #ffebe9; }
+  td.status-fail { color: var(--fail); font-weight: 700; }
+  #status { padding: 32px 24px; font-size: 14px; color: var(--muted); }
+  #status.error { color: var(--fail); }
+  td, th { word-break: break-all; }
+</style>
+</head>
+<body>
+<header>
+  <h1>datasow 校验报告</h1>
+  <div class="meta">来源：<code id="src">…</code> · schema <code id="schema">…</code>
+    · seed <code id="seed">…</code> · rows-scale <code id="scale">…</code></div>
+</header>
+<div id="status">加载中…</div>
+<div id="summary" hidden></div>
+<main id="content"></main>
+<script>
+"use strict";
+
+function reportPath() {
+  const q = new URLSearchParams(location.search);
+  return q.get("report") || "out/report.json";
+}
+
+function el(tag, cls, text) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text !== undefined) e.textContent = text;
+  return e;
+}
+
+function showStatus(msg, isError) {
+  const s = document.getElementById("status");
+  s.textContent = msg;
+  s.hidden = !msg;
+  s.className = isError ? "error" : "";
+}
+
+function fmtRatio(r) {
+  return (r * 100).toFixed(2) + "%";
+}
+
+function drawHistogram(canvas, buckets) {
+  const dpr = window.devicePixelRatio || 1;
+  const W = 496, H = 220, padL = 44, padB = 58, padT = 18, padR = 8;
+  canvas.width = W * dpr; canvas.height = H * dpr;
+  canvas.style.height = H + "px";
+  const ctx = canvas.getContext("2d");
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, W, H);
+  const plotW = W - padL - padR, plotH = H - padT - padB;
+  const n = buckets.length;
+  if (!n) {
+    ctx.fillStyle = "#656d76"; ctx.font = "12px sans-serif";
+    ctx.fillText("（无分桶数据）", padL, padT + 20);
+    return;
+  }
+  const maxRatio = Math.max(...buckets.map(b => b.ratio), 1e-9);
+  // y 轴
+  ctx.strokeStyle = "#d0d7de"; ctx.fillStyle = "#656d76"; ctx.font = "10px sans-serif";
+  ctx.beginPath();
+  for (let i = 0; i <= 4; i++) {
+    const y = padT + plotH - plotH * i / 4;
+    ctx.moveTo(padL, y); ctx.lineTo(W - padR, y);
+    ctx.fillText(fmtRatio(maxRatio * i / 4), 4, y + 3);
+  }
+  ctx.stroke();
+  // 柱
+  const gap = Math.min(8, plotW / n * 0.25);
+  const bw = plotW / n - gap;
+  buckets.forEach((b, i) => {
+    const x = padL + i * (plotW / n) + gap / 2;
+    const h = plotH * (b.ratio / maxRatio);
+    const y = padT + plotH - h;
+    ctx.fillStyle = "#0969da";
+    ctx.fillRect(x, y, Math.max(bw, 1), h);
+    ctx.fillStyle = "#1f2328"; ctx.font = "9px sans-serif";
+    if (bw > 34 || n <= 12) {
+      ctx.save();
+      ctx.translate(x + bw / 2, y - 2);
+      ctx.textAlign = "center";
+      ctx.fillText(`${b.count} · ${fmtRatio(b.ratio)}`, 0, 0);
+      ctx.restore();
+    }
+    // x 轴桶键（斜排）
+    ctx.save();
+    ctx.translate(x + bw / 2, padT + plotH + 4);
+    ctx.rotate(n > 4 ? -Math.PI / 4 : 0);
+    ctx.textAlign = n > 4 ? "right" : "center";
+    ctx.fillStyle = "#656d76";
+    ctx.fillText(b.key, 0, 0);
+    ctx.restore();
+  });
+}
+
+function render(report, src) {
+  showStatus("");
+  document.getElementById("src").textContent = src;
+  document.getElementById("schema").textContent = report.schema;
+  document.getElementById("seed").textContent = String(report.seed);
+  document.getElementById("scale").textContent = String(report.rows_scale);
+
+  const sum = document.getElementById("summary");
+  sum.hidden = false;
+  const s = report.summary;
+  const cards = [
+    [s.total, "检查总数", ""],
+    [s.pass, "通过", "pass"],
+    [s.fail, "失败", "fail"],
+    [report.tables.reduce((a, t) => a + t.rows, 0), "总行数", ""],
+  ];
+  for (const [num, label, cls] of cards) {
+    const c = el("div", "card");
+    c.append(el("div", "num " + cls, String(num)), el("div", "label", label));
+    sum.append(c);
+  }
+
+  const main = document.getElementById("content");
+  for (const table of report.tables) {
+    main.append(el("h2", null, `表 ${table.name}`));
+    main.append(el("div", "table-meta",
+      `行数 ${table.rows} · ${table.columns.length} 列 · ${table.checks.length} 条检查`));
+
+    main.append(el("h3", null, "字段分布"));
+    const grid = el("div", "grid");
+    for (const col of table.columns) {
+      const card = el("div", "col-card");
+      const h = el("h4");
+      h.append(document.createTextNode(col.name + " "));
+      h.append(el("span", "type", col.type));
+      card.append(h);
+      card.append(el("div", "col-stats",
+        `唯一值 ${col.unique_count} · 空值 ${col.null_count}`));
+      const canvas = document.createElement("canvas");
+      card.append(canvas);
+      grid.append(card);
+      drawHistogram(canvas, col.buckets || []);
+    }
+    main.append(grid);
+
+    main.append(el("h3", null, "约束校验"));
+    const tbl = el("table", "checks");
+    const head = el("tr");
+    for (const h of ["id", "kind", "status", "expected", "measured",
+                     "tolerance", "detail"]) {
+      head.append(el("th", null, h));
+    }
+    tbl.append(head);
+    for (const ck of table.checks) {
+      const tr = el("tr", ck.status === "fail" ? "fail" : null);
+      tr.append(el("td", null, ck.id));
+      tr.append(el("td", null, ck.kind));
+      tr.append(el("td", "status-" + ck.status, ck.status));
+      tr.append(el("td", null, fmtVal(ck.expected)));
+      tr.append(el("td", null, fmtVal(ck.measured)));
+      tr.append(el("td", null, ck.tolerance === null ? "-" : String(ck.tolerance)));
+      tr.append(el("td", null, ck.detail || ""));
+      tbl.append(tr);
+    }
+    main.append(tbl);
+  }
+}
+
+function fmtVal(v) {
+  if (v === null || v === undefined) return "-";
+  if (typeof v === "number") return String(v);
+  return String(v);
+}
+
+async function boot() {
+  const path = reportPath();
+  try {
+    const resp = await fetch("/" + path.replace(/^\/+/, ""));
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    render(await resp.json(), path);
+  } catch (err) {
+    showStatus(`加载报告失败：${err.message}。请确认在仓库根目录执行 ` +
+      `python -m http.server 8000 后访问，并检查 ?report= 路径（当前：${path}）。` +
+      `file:// 直接打开无法读取报告。`, true);
+  }
+}
+boot();
+</script>
+</body>
+</html>
